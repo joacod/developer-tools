@@ -11,6 +11,7 @@ My setup and notes for development tools, AI agents, and server utilities.
 | OpenCode | [`./ai-coding-harnesses/opencode`](./ai-coding-harnesses/opencode) | Open source AI coding agent. |
 | Pi | [`./ai-coding-harnesses/pi`](./ai-coding-harnesses/pi) | Minimal, extensible terminal coding harness. |
 | OMP | [`./ai-coding-harnesses/omp`](./ai-coding-harnesses/omp) | Terminal coding agent with subagents, plan mode, LSP, DAP, and hashline edits. |
+| Grok Build | [`./ai-coding-harnesses/grok-build`](./ai-coding-harnesses/grok-build) | SpaceXAI's terminal coding agent (TUI, headless, ACP). |
 
 ## AI agents & workflows
 

@@ -109,7 +109,7 @@ This makes the custom mode available only for that project.
 Copy the `.opencode` folder into your project to try it.
 
 | Name | Scope | Path | Description |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | `FunMode` | Project-specific | [`.opencode/agent/funmode.md`](./.opencode/agent/funmode.md) | Example custom mode with a playful, high-personality response style. |
 
 Once copied, init OpenCode and press Tab to switch modes, you should see a new `FunMode` available.

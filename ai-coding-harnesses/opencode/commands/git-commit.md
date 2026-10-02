@@ -2,6 +2,9 @@
 description: Stage, commit changes with a safe, generated message
 ---
 
+<!-- source: ai-coding-harnesses/shared/commands/git-commit-core.md -->
+<!-- adapter: OpenCode `!`cmd expansion for shell checks; $ARGUMENTS passthrough -->
+
 Before committing, follow these steps in order:
 
 1. **Review local changes first:**
@@ -36,6 +39,6 @@ Before committing, follow these steps in order:
    - Otherwise, infer type from changes and write a concise subject (max 50 chars).
    - Add a short body only when it clarifies why.
 
-7. **Commit with the chosen message.**
+7. **Commit with the chosen message.** Follow any higher-priority project or global safety instructions, including confirmation requirements.
 
 $ARGUMENTS

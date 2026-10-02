@@ -1,5 +1,7 @@
 # Global OpenCode Instructions
 
+<!-- source: ai-coding-harnesses/shared/instructions/global-core.md -->
+
 ## Communication
 - Lead with the answer or action. No filler openers.
 - Match response length to task complexity.
@@ -17,7 +19,7 @@
 - No backward compatibility unless there is a concrete reason: persisted data, external consumers, or an explicit requirement.
 - Do not revert or modify unexpected worktree changes.
 
-## Irreversible actions - ask first
+## Irreversible actions — ask first
 Deletes, overwrites, migrations, dependency removal, deploys, pushes, commits, branches, PRs, publishes, external API calls, outbound messages.
 
 ## After coding

@@ -1,7 +1,3 @@
-# Global Claude Code Instructions
-
-<!-- source: ai-coding-harnesses/shared/instructions/global-core.md -->
-
 ## Communication
 - Lead with the answer or action. No filler openers.
 - Match response length to task complexity.

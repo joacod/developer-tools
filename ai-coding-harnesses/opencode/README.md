@@ -29,6 +29,10 @@ Relevant documentation:
 
 OpenCode reads `AGENTS.md` files for persistent instructions. Use global instructions for behavior that should apply everywhere, and project instructions for repository-specific context and stack choices.
 
+**Edit shared first.** Policy bodies live in [`../shared/`](../shared/). The files under `instructions/` and `commands/` are thin harness adapters (see the `source:` comment at the top of each file). Copy destinations below are unchanged.
+
+Optional clearer-writing tip: [`../shared/snippets/ste100-lite.md`](../shared/snippets/ste100-lite.md) is opt-in only — do not add it to standing global instructions.
+
 ### Global instructions
 
 Copy the global template to `~/.config/opencode/AGENTS.md`:
@@ -66,8 +70,10 @@ Do not put project-specific stack choices in the global file. A decision that is
 
 | Scope | Path | Description |
 | --- | --- | --- |
-| Global | [`instructions/global/AGENTS.md`](./instructions/global/AGENTS.md) | Reusable OpenCode behavior and safety rules. |
-| Project | [`instructions/project/AGENTS.md`](./instructions/project/AGENTS.md) | Project-specific context, stack, and behavior rules. |
+| Shared core | [`../shared/instructions/global-core.md`](../shared/instructions/global-core.md) | Shared Communication / Before / While / Irreversible / After body. |
+| Shared project | [`../shared/instructions/project-template.md`](../shared/instructions/project-template.md) | Shared project skeleton. |
+| Global | [`instructions/global/AGENTS.md`](./instructions/global/AGENTS.md) | OpenCode adapter of the shared global core. |
+| Project | [`instructions/project/AGENTS.md`](./instructions/project/AGENTS.md) | OpenCode adapter of the shared project template. |
 
 ### Extra
 
@@ -92,6 +98,8 @@ Available commands:
 | `/git-commit` | [`commands/git-commit.md`](./commands/git-commit.md) | Stage and commit changes with safety checks and a generated message. |
 | `/git-push` | [`commands/git-push.md`](./commands/git-push.md) | Push the current branch with safety checks and optionally create a PR. |
 
+Shared step flows (without OpenCode `!`cmd syntax): [`../shared/commands/`](../shared/commands/).
+
 ## Custom agents/modes
 
 You can define project-specific custom agents by adding an `.opencode/agent/` folder inside your project.
@@ -101,7 +109,7 @@ This makes the custom mode available only for that project.
 Copy the `.opencode` folder into your project to try it.
 
 | Name | Scope | Path | Description |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | `FunMode` | Project-specific | [`.opencode/agent/funmode.md`](./.opencode/agent/funmode.md) | Example custom mode with a playful, high-personality response style. |
 
 Once copied, init OpenCode and press Tab to switch modes, you should see a new `FunMode` available.

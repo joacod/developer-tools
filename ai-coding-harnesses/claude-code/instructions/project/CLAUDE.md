@@ -1,5 +1,7 @@
 # Project Claude Code Instructions
 
+<!-- source: ai-coding-harnesses/shared/instructions/project-template.md -->
+
 <!-- Fill in brackets. Delete sections that don't apply. Keep under one page. -->
 
 ## Project

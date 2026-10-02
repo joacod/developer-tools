@@ -1,12 +1,4 @@
----
-description: Push the current branch to origin with safety checks
-argument-hint: "[force|-f|create-pr]"
----
-
-<!-- source: ai-coding-harnesses/shared/commands/git-push-core.md -->
-<!-- adapter: Pi bash tool; run each listed command and inspect its output -->
-
-Push the current branch to `origin` with these safety checks. Use the bash tool to run each command and inspect its output:
+Push the current branch to `origin` with these safety checks:
 
 1. **Identify current branch and upstream:**
    - Current branch: `git branch --show-current`
@@ -30,14 +22,11 @@ Push the current branch to `origin` with these safety checks. Use the bash tool 
    - New branch: `git push -u origin <current-branch>`.
    - Existing branch: `git push origin <current-branch>`.
    - If the push is rejected because the remote has changes, suggest `git pull --rebase` first.
-   - If the user-provided arguments include `force` or `-f`, use `git push --force-with-lease` instead of `--force`.
+   - If arguments include `force` or `-f`, use `git push --force-with-lease` instead of `--force`.
 
 6. **Report the result and offer PR creation:**
    - Confirm a successful push.
    - Show the remote URL.
    - If the remote is GitHub or GitLab, ask whether to create a PR or MR now.
-   - If the user-provided arguments include `create-pr`, treat that as a preference to create a PR after the push, while still following confirmation requirements.
+   - If arguments include `create-pr`, treat that as a preference to create a PR after the push, while still following confirmation requirements.
    - If the user agrees and the remote is GitHub, create it with `gh pr create`.
-
-User-provided arguments:
-$ARGUMENTS

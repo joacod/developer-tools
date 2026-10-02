@@ -79,6 +79,10 @@ pi @src/app.ts @src/app.test.ts "Review these files together"
 
 Pi's file-backed slash commands are called **prompt templates**. The templates in [`prompts/`](./prompts) provide reusable git workflows.
 
+**Edit shared first.** Step flows live in [`../shared/commands/`](../shared/commands/). The files under `prompts/` are thin Pi adapters (bash-tool wording; see the `source:` comment at the top of each file). Install paths below are unchanged.
+
+Optional clearer-writing tip: [`../shared/snippets/ste100-lite.md`](../shared/snippets/ste100-lite.md) is opt-in only — do not add it to standing global instructions.
+
 Install them globally:
 
 ```bash

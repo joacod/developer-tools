@@ -2,6 +2,9 @@
 description: Push current branch to origin with safety checks
 ---
 
+<!-- source: ai-coding-harnesses/shared/commands/git-push-core.md -->
+<!-- adapter: OpenCode `!`cmd expansion for shell checks; $ARGUMENTS passthrough -->
+
 Push the current branch to origin with these safety checks:
 
 1. **Identify current branch and upstream:**
@@ -22,6 +25,7 @@ Push the current branch to origin with these safety checks:
    - Determine default remote branch:
      !`git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null || echo "(unknown)"`
    - If pushing to the default branch (or a protected branch), ask for explicit confirmation.
+   - Follow any higher-priority project or global safety instructions, including confirmation requirements.
 
 5. **Execute the push:**
    - New branch: `git push -u origin <current-branch>`
@@ -31,6 +35,7 @@ Push the current branch to origin with these safety checks:
 6. **Report result and offer PR creation:**
    - Confirm successful push.
    - Show the remote URL. If it's GitHub/GitLab, ask whether to create a PR/MR now.
+   - If $ARGUMENTS includes `create-pr`, treat that as a preference to create a PR after the push, while still following confirmation requirements.
    - If yes and it's GitHub, create it with `gh pr create`.
 
 $ARGUMENTS

@@ -6,10 +6,9 @@ Install [Socket Firewall](https://github.com/SocketDev/sfw-free) and use it to p
 
 This guide installs `sfw`, clears local package manager caches, and runs dependency installs through Socket Firewall.
 
-- **`sfw` wraps package manager commands:** run installs through Socket Firewall
-- **Malicious dependencies are blocked before install:** including known malicious transitive dependencies
-- **pnpm is supported:** use it with existing `pnpm` projects
-- **Bun is not guaranteed:** it may work, but it is not listed as officially supported in Socket Firewall Free
+- **`sfw` wraps package manager commands:** prefix the install command with `sfw`
+- **Official package managers:** `npm`, `yarn`, `pnpm`, `pip`, `uv`, and `cargo`
+- **Bun is outside that list:** it may run, and Socket Firewall Free does not list it as supported
 
 **Result:** you get a simple dependency install flow with an extra security layer.
 
@@ -75,6 +74,16 @@ For CI or lockfile-based installs:
 
 ```sh
 sfw pnpm install --frozen-lockfile
+```
+
+## Use with pip, uv, or cargo
+
+Prefix those package managers the same way:
+
+```sh
+sfw pip install requests
+sfw uv pip install flask
+sfw cargo fetch
 ```
 
 ## Add npm scripts

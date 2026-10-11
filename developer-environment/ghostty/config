@@ -8,4 +8,5 @@ mouse-scroll-multiplier = 2
 adjust-cell-height=15%
 copy-on-select = clipboard
 window-colorspace = "display-p3"
+# Install Ghostty terminfo on the remote host. Fall back to xterm-256color if that install fails.
 shell-integration-features = ssh-terminfo,ssh-env

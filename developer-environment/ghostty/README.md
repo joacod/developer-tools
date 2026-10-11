@@ -1,10 +1,25 @@
 # Ghostty
 
-Configuration and notes on [Ghostty](https://ghostty.org/) terminal.
+Configuration and shell setup for the [Ghostty](https://ghostty.org/) terminal.
 
-## General configuration
+## Install
 
-Paste the content of `config` into Ghostty settings.
+```sh
+brew install --cask ghostty
+```
+
+## Configuration
+
+Ghostty reads `~/.config/ghostty/config.ghostty`. It still reads a file named `config` in that directory. On macOS it also reads `~/Library/Application Support/com.mitchellh.ghostty/`, and that location wins when both exist.
+
+From this directory:
+
+```sh
+mkdir -p ~/.config/ghostty
+cp config ~/.config/ghostty/config.ghostty
+```
+
+Quit Ghostty and open it again. The copied file sets the Dracula theme, JetBrains Mono Nerd Font, window padding, and the SSH shell-integration features `ssh-terminfo` and `ssh-env`. Install the font in the next section so that family name resolves.
 
 ## Font
 
@@ -26,7 +41,7 @@ Add this line to your `~/.zshrc` file:
 
 ```sh
 # ZSH Auto-suggestions. This plugin remembers your history and suggests commands as you type
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 ```
 
 Restart your terminal or run `exec zsh`

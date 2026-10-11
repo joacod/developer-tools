@@ -1,6 +1,11 @@
 # Developer Tools
 
-My setup and notes for development tools, AI agents, and server utilities.
+Personal notes for the coding agents, local tools, and VPS setup I use.
+
+Each directory is its own guide. Open that tool's README and follow it. This repository is not an application, and the files in it are not live configuration.
+
+- Folders under `ai-coding-harnesses/claude-code/`, `ai-coding-harnesses/codex/`, and `ai-coding-harnesses/opencode/` hold templates you copy into the paths their READMEs name.
+- The other folders are procedures. Run a command only on the machine, and as the user, that guide names.
 
 ## AI coding harnesses
 

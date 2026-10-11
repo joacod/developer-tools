@@ -8,7 +8,7 @@ Use it when a task is large enough that a normal prompt would be too vague, risk
 
 ## Daily workflow
 
-Use one focused OpenSpec change at a time.
+Use one focused OpenSpec change at a time. The name `foundation-001` below is an example. Substitute the folder name of the change you are working on.
 
 ### 1. Validate the change
 

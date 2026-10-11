@@ -1,9 +1,11 @@
 # MCPs for Pi
 
-This page tracks the MCP integrations and Pi packages we like to use. Pi does
-not include MCP support in its core; [`pi-mcp-adapter`](https://github.com/nicobailon/pi-mcp-adapter)
-provides the MCP server integration. Context7 is installed here as a Pi
-package, while GitHub and Playwright are MCP servers.
+This page tracks the MCP integrations and Pi packages used here. Pi 0.99 and
+later include MCP. [`pi-mcp-adapter`](https://github.com/nicobailon/pi-mcp-adapter)
+is still the runtime for these notes: it adds approval gates and starts a
+server when a tool is called. Installing it turns Pi's built-in MCP off.
+Context7 is installed here as a Pi package, while GitHub and Playwright are
+MCP servers.
 
 The paths below use Pi's default global directory. If `PI_CODING_AGENT_DIR` is
 set, use that directory instead of `~/.pi/agent`.

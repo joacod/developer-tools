@@ -2,6 +2,24 @@
 
 [OpenCode](https://opencode.ai) is an open source AI coding agent.
 
+This folder holds copyable config, instruction, command, and custom-agent examples. It is not a live OpenCode configuration.
+
+## Install
+
+These files match the OpenCode 1 config layout in the [config docs](https://opencode.ai/docs/config/). On macOS or Linux:
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+[OpenCode v2](https://opencode.ai/v2/docs/) uses a separate installer, `https://opencode.ai/v2/install`. The OpenCode 1 installer can replace an OpenCode v2 binary. Use one install on a machine.
+
+With Node.js already installed, the OpenCode 1 package name is `opencode-ai`:
+
+```bash
+npm install -g opencode-ai
+```
+
 ## Configuration
 
 Copy the config examples from [`./config`](./config) into `~/.config/opencode/`.
@@ -62,7 +80,7 @@ Do not put project-specific stack choices in the global file. A decision that is
 
 | Scope | Path | Description |
 | --- | --- | --- |
-| Global | [`instructions/global/AGENTS.md`](./instructions/global/AGENTS.md) | Reusable OpenCode behavior and safety rules. |
+| Global | [`instructions/global/AGENTS.md`](./instructions/global/AGENTS.md) | One personal rule for compatibility layers. |
 | Project | [`instructions/project/AGENTS.md`](./instructions/project/AGENTS.md) | Project-specific context, stack, and behavior rules. |
 
 ### Extra
@@ -79,7 +97,14 @@ Coding tools usually need more prompt space than normal chat, so context size ca
 
 ## Commands
 
-Copy the `commands` folder to `/Users/[your-username]/.config/opencode/commands/`
+Copy the `commands` folder to `~/.config/opencode/commands/`:
+
+```bash
+mkdir -p ~/.config/opencode/commands
+cp commands/*.md ~/.config/opencode/commands/
+```
+
+Run the copy from this directory.
 
 Available commands:
 

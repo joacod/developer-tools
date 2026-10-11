@@ -1,12 +1,12 @@
 # Playwright MCP with Pi
 
-Pi does not include MCP in its core. The [`pi-mcp-adapter`](https://github.com/nicobailon/pi-mcp-adapter) package adds MCP support, and the official [`@playwright/mcp`](https://github.com/microsoft/playwright-mcp) server adds browser automation.
+Pi 0.99 and later include MCP. This guide still uses [`pi-mcp-adapter`](https://github.com/nicobailon/pi-mcp-adapter) because it adds the approval gates below and starts Playwright when a browser tool is called. Installing the adapter turns Pi's built-in MCP off. The official [`@playwright/mcp`](https://github.com/microsoft/playwright-mcp) server provides the browser.
 
 This guide covers both global and project-local setups. The current setup in this repository is global for Pi.
 
 ## Prerequisites
 
-- Node.js and npm are available. The repository's [Node.js guide](../../developer-environment/nvm-node) uses an LTS release.
+- Node.js 22.19 or newer, and npm, are available. The repository's [Node.js guide](../../developer-environment/nvm-node) installs the current LTS, which meets that floor.
 - Pi is installed and starts with `pi`.
 - You run Pi from the project directory that should use Playwright.
 
@@ -18,16 +18,25 @@ Check whether the adapter is already installed:
 pi list
 ```
 
-For a global installation, install the pinned version used by this guide if `pi-mcp-adapter` is not listed:
+For a global installation, install adapter 5.2.0 if `pi-mcp-adapter` is not listed:
 
 ```bash
-pi install npm:pi-mcp-adapter@2.25.0
+pi install npm:pi-mcp-adapter@5.2.0
 ```
 
-For a project-only installation, run the same command with `-l` from that project's root:
+If `pi list` shows a release older than 5.2.0, remove it and install 5.2.0:
 
 ```bash
-pi install npm:pi-mcp-adapter@2.25.0 -l
+pi remove npm:pi-mcp-adapter
+pi install npm:pi-mcp-adapter@5.2.0
+```
+
+Release 5.2.0 includes the MCP SDK fix for [GHSA-6qxp-vccf-f47h](https://github.com/advisories/GHSA-6qxp-vccf-f47h). Release 2.25.0 does not. With that older SDK, a malicious or compromised MCP server could send saved sign-in tokens to an authorization server it chose.
+
+For a project-only installation, run the install command with `-l` from that project's root:
+
+```bash
+pi install npm:pi-mcp-adapter@5.2.0 -l
 ```
 
 The adapter package scope and the MCP server configuration scope are independent. A global adapter with a project-local `.mcp.json` is also a valid setup and is usually the simplest way to keep the package available without exposing browser tools to every project.
@@ -86,7 +95,7 @@ Use this scope when only one project needs browser automation or when different 
 
 If the target file already exists, merge the `playwright` entry and add these approval patterns to its existing `settings.approveTools` array. Keep every unrelated server and setting; do not replace the whole file. Do not create duplicate global and project entries unless you intentionally want the project to override the global server.
 
-The `approveTools` patterns are glob matches. A matching MCP call remains visible but Pi asks whether to allow it once, allow it for the session, or deny it. They are approval gates, not a sandbox, and they do not cover a destructive tool whose name does not match a pattern.
+The `approveTools` patterns are glob matches. A matching MCP call remains visible but Pi asks whether to allow it once, allow it for the session, or deny it. They are approval gates, not a sandbox, and they do not cover a destructive tool whose name does not match a pattern. `"approveTools": "destructive"` gates tools the server marks as changing or deleting data. The name patterns above still cover credential-related tools that hint would miss.
 
 The `@latest` tag follows the current official Playwright MCP release and `npx` downloads it when the server is first used. For reproducible or tightly controlled environments, replace `@latest` with a verified version of the same official `@playwright/mcp` package.
 

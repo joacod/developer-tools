@@ -37,13 +37,9 @@ Copy the global template to `~/.config/opencode/AGENTS.md`:
 cp instructions/global/AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
-The global template focuses on reusable behavior:
+The global template keeps one personal rule. Harness defaults cover ordinary coding behavior.
 
-- Ask before assuming
-- Prefer the simplest correct change
-- Avoid touching unrelated code
-- Flag uncertainty explicitly
-- Confirm before destructive or external actions
+- Add a compatibility layer only when persisted data, an external consumer, or an explicit requirement needs it.
 
 ### Project instructions
 

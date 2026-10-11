@@ -10,6 +10,8 @@ Download the desktop app for [macOS, Windows, or Linux](https://www.onorca.dev/d
 brew install --cask stablyai/orca/orca
 ```
 
+Use that full cask name. `brew install --cask orca` without the tap installs a different Homebrew cask.
+
 For older versions and all release assets, see [GitHub Releases](https://github.com/stablyai/orca/releases).
 
 ## Getting started

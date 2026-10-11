@@ -1,6 +1,18 @@
 # Claude Code
 
-[Claude Code](https://claude.com/product/claude-code) is an agentic coding tool by Anthropic that lives in your terminal.
+[Claude Code](https://claude.com/product/claude-code) is Anthropic's terminal coding agent.
+
+This folder holds copyable subagent and instruction templates. It is not a live Claude Code configuration.
+
+## Install
+
+On macOS, Linux, or WSL, install the native binary:
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+Open a new terminal, change to a project directory, and run `claude`. The native installer is the current method. The npm package `@anthropic-ai/claude-code` is deprecated.
 
 ## Subagents
 
@@ -68,15 +80,23 @@ Do not put project-specific stack choices in the global file. A decision that is
 
 | Scope | Path | Description |
 | --- | --- | --- |
-| Global | [`instructions/global/CLAUDE.md`](./instructions/global/CLAUDE.md) | Reusable Claude Code behavior and safety rules. |
+| Global | [`instructions/global/CLAUDE.md`](./instructions/global/CLAUDE.md) | One personal rule for compatibility layers. |
 | Project | [`instructions/project/CLAUDE.md`](./instructions/project/CLAUDE.md) | Project-specific context, stack, and behavior rules. |
 
 ## MCP
 
 Claude Code supports MCP servers, which let it connect to external tools and capabilities.
 
-For example, you can install the Playwright MCP server with:
+A local stdio server needs `--` before the command Claude Code should run. This registers Playwright for the current project only:
 
 ```bash
-claude mcp add playwright npx @playwright/mcp@latest
+claude mcp add playwright -- npx -y @playwright/mcp@latest
 ```
+
+To register it for every project:
+
+```bash
+claude mcp add --scope user playwright -- npx -y @playwright/mcp@latest
+```
+
+Check the result with `claude mcp list`. The first check can fail while `npx` downloads the package. Run it again after the download finishes.

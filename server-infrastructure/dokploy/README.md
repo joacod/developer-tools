@@ -49,7 +49,7 @@ Use your existing admin user for the VPS commands below unless a section says ot
 Run the official installer.
 
 ```sh
-sudo curl -sSL https://dokploy.com/install.sh | sudo sh
+curl -sSL https://dokploy.com/install.sh | sudo sh
 ```
 
 What this does:
@@ -120,7 +120,7 @@ Updates are available directly from the Dokploy dashboard. Look for the update n
 - This guide assumes Tailscale is your safe way to reach the Dokploy panel during setup.
 - If you later run Hermes on the same machine, keep Dokploy on the system Docker daemon and keep Hermes on a separate rootless Docker daemon for the `hermes` user.
 - If you want version pinning, custom swarm network options, or manual installation details, use the official manual installation docs.
-- If you later update Dokploy, the basic update command is `sudo curl -sSL https://dokploy.com/install.sh | sudo sh -s update`.
+- If you later update Dokploy, the basic update command is `curl -sSL https://dokploy.com/install.sh | sudo sh -s update`.
 
 ## Official references
 

@@ -4,23 +4,30 @@
 
 ## Install
 
-This guide uses the npm installation path from the [Codex CLI documentation](https://developers.openai.com/codex/cli/):
+The current default installer does not need Node.js. On macOS or Linux:
+
+```bash
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+```
+
+When Node.js is already installed through the [NVM and Node.js guide](../../developer-environment/nvm-node), npm still works:
 
 ```bash
 npm install -g @openai/codex
 ```
 
-If you need Node.js and npm first, see the [NVM and Node.js guide](../../developer-environment/nvm-node).
+Use the scoped package name `@openai/codex`. The unscoped `codex` package is a different project.
 
 ## Use
 
-From a project directory, sign in and start Codex:
+From a project directory, start Codex. The first launch asks you to sign in:
 
 ```bash
 cd /path/to/project
-codex login
 codex
 ```
+
+Run `codex login` when you want to authenticate before opening a session.
 
 Complete the browser sign-in flow, then describe the task. For example:
 

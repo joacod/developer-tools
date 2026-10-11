@@ -17,8 +17,10 @@ This guide installs `nvm`, loads it in your shell, and uses it to install the la
 
 Download and run the official installer.
 
+The version in the URL is the nvm release this command installs. [v0.40.8](https://github.com/nvm-sh/nvm/releases/tag/v0.40.8) is the current release.
+
 ```sh
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash
 ```
 
 ## Load NVM in your shell
@@ -67,19 +69,11 @@ Install the latest Node.js LTS version.
 nvm install --lts
 ```
 
-To migrate and reinstall the global packages from an existing Node.js version, include that version in the install command:
+To migrate and reinstall the global packages from an existing Node.js version, pass the version that `node --version` prints, including the leading `v`:
 
 ```sh
-nvm install --lts --reinstall-packages-from=<current-version>
+nvm install --lts --reinstall-packages-from=<installed-version>
 ```
-
-For example:
-
-```sh
-nvm install --lts --reinstall-packages-from=v22.18.0
-```
-
-This migrates and reinstalls all global packages from the previous version so they keep working as expected.
 
 ## Activate the default Node.js version
 

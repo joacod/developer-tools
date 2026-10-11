@@ -65,6 +65,8 @@ fallback_providers:
     model: deepseek/deepseek-v4-flash-0731
 ```
 
+That model id is the dated snapshot in the [OpenRouter shortlist](../../../ai-apis-services/openrouter/README.md). Confirm the slug in the catalog before copying this block into a new Hermes config.
+
 The current Hermes fallback manager is also available through:
 
 ```sh

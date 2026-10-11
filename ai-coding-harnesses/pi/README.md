@@ -6,9 +6,13 @@ For a new setup, follow this guide in order: install Pi, authenticate, start it 
 
 ## Installation
 
-Pi requires Node.js and npm. Use an LTS release; the repository's [NVM and Node.js guide](../../developer-environment/nvm-node) covers that setup.
+The Pi installer pins Pi's dependencies and can install Node.js when it is missing:
 
-Install Pi globally with npm:
+```bash
+curl -fsSL https://pi.dev/install.sh | sh
+```
+
+The npm install needs Node.js 22.19 or newer. The [NVM and Node.js guide](../../developer-environment/nvm-node) installs the current LTS, which meets that floor. npm does not pin Pi's transitive dependencies:
 
 ```bash
 npm install -g --ignore-scripts @earendil-works/pi-coding-agent
@@ -149,7 +153,9 @@ Review project instructions, skills, extensions, packages, and MCP configuration
 
 ## MCP integrations
 
-Pi does not include MCP in its core. The [MCP catalog](./mcps.md) tracks the integrations currently used here, including Context7 and GitHub. The [Playwright MCP guide](./mcp-playwright.md) documents global and project-local setups using `pi-mcp-adapter`, the official `@playwright/mcp` server, and approval gates for destructive or credential-related tool names. MCP servers inherit Pi's user permissions, so review their commands and keep secrets out of MCP configuration files.
+Pi 0.99 and later include MCP. This repository still uses [`pi-mcp-adapter`](https://github.com/nicobailon/pi-mcp-adapter), because the adapter adds approval gates, starts a server when a tool is called, and reads the same `mcp.json` files. Installing the adapter turns Pi's built-in MCP off so the two do not run together.
+
+The [MCP catalog](./mcps.md) lists the integrations used here, including Context7 and GitHub. The [Playwright MCP guide](./mcp-playwright.md) documents global and project-local setups with the official `@playwright/mcp` server and approval gates for destructive or credential-related tool names. MCP servers inherit Pi's user permissions, so review their commands and keep secrets out of MCP configuration files.
 
 ## Further reading
 

@@ -1,0 +1,96 @@
+# Agent-assisted VPS setup
+
+Use this checklist for a fresh Ubuntu VPS or an OS reinstall. The [human setup guide](./README.md) supplies the baseline commands; [SSH over Tailscale](../tailscale/ssh-over-tailscale-for-vps.md) supplies the private-network migration.
+
+This is an operational checklist, not an unattended installer. Execute each phase only after its preceding checks pass.
+
+## Inputs and boundaries
+
+Resolve these from the user's request, existing local SSH configuration, and trusted provider console. Ask only for missing decisions:
+
+- Target VPS and whether it is fresh or hosts existing workloads.
+- Intended admin username and local alias, creating them if this is a first setup.
+- Whether the user wants to create a dedicated SSH key or reuse one, and its local path.
+- Whether a tailnet already exists, which account/network to use, and the server's actual name/address after enrollment.
+- Intended public services and an independent recovery path.
+- Whether sudo requires a password or passwordless sudo is explicitly wanted.
+
+Keep actual usernames, addresses, hostnames, emails, fingerprints, keys, authentication links, and console output out of repository changes. Examples use placeholders. Never read or transmit the private SSH key. Never overwrite an existing key or replace the whole local SSH configuration.
+
+Follow the execution environment's approval rules for access changes, credentials, device removal, and reboots. Do not infer permission to delete devices, broaden tailnet access, disable expiry, or reboot a working application from a documentation task.
+
+## 1. Inspect and preserve recovery
+
+Read-only checks on the VPS:
+
+```sh
+whoami
+hostname
+cat /etc/os-release
+ip -brief address
+ss -tulnp
+ufw status verbose
+getent passwd youruser
+ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+Run privileged inspection from the trusted root console or with sudo. On the local machine, check whether an SSH configuration, intended alias, and dedicated key already exist. Inspect only the relevant config block and public-key metadata when present; a first setup may have none of them. Back up existing files before changing them, including SSH snippets, sudoers snippets, firewall configuration, and local `config`/`known_hosts`.
+
+Keep the initial session open. Verify an independent provider recovery console or rescue procedure; a browser terminal that depends on public SSH/root login is not independent recovery.
+
+## 2. Create or restore the admin user and SSH key
+
+Use the [user steps](./README.md#add-user) to create the intended non-root account if it does not exist. Verify an existing account before modifying its groups or access.
+
+Before handling keys, ask: "Do you already have a dedicated SSH key you want to use for this VPS, or should we create one?" If the user has already answered, keep that decision. Resolve the chosen path and, for a new key, the passphrase preference before generation. Recommend a passphrase and let the user enter it securely; do not collect it in chat or put it into commands.
+
+- **New key:** follow [Generate SSH key](./README.md#generate-ssh-key) on the local machine. Choose an unused path, stop if either key file already exists, and explain which file is private and which is public.
+- **Existing key:** verify the user-selected path and `.pub` fingerprint. Do not infer permission to use a key merely because it exists, or request the private-key contents. If the public file is missing, resolve that before proceeding; do not generate over the existing private key.
+
+Copy the chosen public key to the intended VPS account. Preserve unrelated authorized keys on an existing system. Set `.ssh` to `700`, `authorized_keys` to `600`, and both to the account's ownership. Add the local SSH alias if absent, or update only its block if present.
+
+Default to the human guide's password-protected sudo account. Let the user enter their password securely. For a deliberately passwordless account, a locked password plus sudo-group membership alone will not make sudo usable: an explicit, validated sudoers rule is needed. Passwordless sudo means compromise of that account's SSH access permits root access without another password. Do not silently choose this trade-off or leave a temporary `NOPASSWD` rule behind.
+
+Verify sudoers changes with `visudo -cf` before relying on them.
+
+## 3. Verify the SSH host key
+
+For a first setup, verify the server fingerprint before trusting it. An OS reinstall normally changes the server host key, so verify the replacement again. Obtain its fingerprint through the trusted provider console and compare that with the key presented over SSH before accepting it.
+
+`ssh-keyscan` can collect a candidate public host key, but cannot establish its authenticity. Do not disable host-key checking or blindly remove a warning. After an independent match, back up `known_hosts` and replace only the relevant stale entries. Keyscan output can include comment/banner lines; parse key records rather than assuming the first line is a key.
+
+Open a separate local connection with the intended key and account. Verify `id` and working sudo (`sudo -v` then `sudo id`, or `sudo -n id` only for an intentionally passwordless account). Continue only when both work.
+
+## 4. Harden OpenSSH and maintain packages
+
+Follow [SSH hardening](./README.md#harden-ssh). Check snippet precedence, run `sshd -t`, verify effective values using `sshd -T`, reload SSH, and open another new connection. Add an `AllowUsers` restriction only after identifying every legitimate SSH account.
+
+Install UFW, unattended upgrades, and Fail2ban from Ubuntu's repositories. Use the journal-backed SSH jail on systems without an auth log. Verify periodic APT settings and timers. Inspect available upgrades before applying them; allow an active unattended upgrade to finish instead of deleting package locks or interrupting dpkg.
+
+Record any reboot requirement. Reboot a fresh, unused VPS when authorized by the setup scope; agree a maintenance window for existing applications.
+
+## 5. Enroll and test Tailscale before closing public SSH
+
+Install Tailscale from its [official Linux instructions](https://tailscale.com/docs/install/linux) for the detected distribution. Use ordinary OpenSSH over Tailscale; do not enable Tailscale SSH as a substitute for this workflow.
+
+Ask which Tailscale account/network to use if it is not already established. For a first setup without a tailnet, follow [First setup](../tailscale/README.md#first-setup) and let the user complete account registration. Otherwise authenticate into the intended existing tailnet. Device enrollment can require a fresh identity-provider login even when the admin console is already signed in. Do not create a duplicate account or embed authentication tokens in repository files.
+
+Inspect `tailscale status` and `tailscale ip -4`. Reinstalls create new device identities; an expired record may reserve the old hostname and cause a suffix. Set the intended local SSH alias to the connected server's actual name or address, preserving other aliases. Independently verify the same new host key over this path.
+
+Prove a fresh `ssh myvps` and working sudo over Tailscale. Then follow the [firewall migration](../tailscale/ssh-over-tailscale-for-vps.md#allow-ssh-from-tailscale): permit tailnet traffic, remove every public SSH allow/limit rule for IPv4 and IPv6, and leave web ports closed unless an actual public service needs them. Preserve other legitimate workload rules.
+
+Review the provider firewall too, especially before Docker publishes ports. Optional inbound Tailscale UDP permits direct connections; it does not expose SSH. Tailnet grants/ACLs, rather than UFW alone, decide which tailnet peers should reach services.
+
+## 6. Verify persistence and clean up retired identities
+
+Run the [sanity checks](./sanity-check.md), then verify:
+
+- A new local `ssh myvps` uses the intended user/key and sudo works.
+- Root and password authentication are rejected on the reachable private path; public IPv4 SSH fails. Test public IPv6 from an IPv6-capable client or label that check unverified.
+- SSH, Tailscale, firewall, and Fail2ban are healthy; APT timers are enabled.
+- `dpkg --audit` is clear and there are no unexplained failed units.
+- After an approved reboot, repeat login, sudo, service, firewall, and kernel/reboot checks.
+
+For a reinstall, only after the replacement works, match any retired tailnet entry by its old address and last-seen/OS information, then obtain the required removal confirmation. Never delete a machine solely because it is offline or has a similar name. Keep the working alias aligned with the replacement if names are later changed.
+
+Finish with a brief report: the connection command, sudo model, public exposure, checks actually performed, backup locations, and any remaining recovery, account-MFA, tailnet-policy, provider-firewall, or backup work. Do not claim unperformed checks passed.

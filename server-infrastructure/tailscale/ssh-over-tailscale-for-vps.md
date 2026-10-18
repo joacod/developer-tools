@@ -60,6 +60,8 @@ Only the `HostName` value changes for this migration. Your users and private key
 
 If you do not use MagicDNS, use the VPS Tailscale IP instead.
 
+After an OS reinstall, the VPS is a new Tailscale identity. An old entry can retain the original name, so the new machine may receive a suffix. Use the name and address shown for the connected replacement, not the expired entry. Follow the [rebuild checklist](../vps-security/agent-setup.md) to verify its new SSH host key and remove stale records safely.
+
 ## Check the current VPS state
 
 > **Run as:** your admin user on the VPS
@@ -103,6 +105,10 @@ Allow incoming traffic on the Tailscale interface.
 sudo ufw allow in on tailscale0
 ```
 
+This allows tailnet traffic broadly. Tailscale also installs its own packet-filter rules, so UFW is not a substitute for tailnet access controls. Review grants/ACLs to decide which users and devices may reach the server.
+
+Optionally allow `41641/udp` in both host and provider firewalls for direct Tailscale connections. This is Tailscale transport, not public SSH; blocked inbound UDP can still use relays. Use the actual listen port if customized.
+
 ## Remove public SSH exposure
 
 > **Run as:** your admin user on the VPS
@@ -117,8 +123,8 @@ sudo ufw status numbered
 
 What to look for:
 
-- one or more rules for `OpenSSH`
-- the rule numbers attached to those `OpenSSH` entries
+- any public SSH rule, including `OpenSSH`, `22/tcp`, or a custom SSH port, with either `ALLOW` or `LIMIT`
+- the rule numbers attached to those public SSH entries
 
 You will use those rule numbers in the next step.
 
@@ -127,7 +133,7 @@ You will use those rule numbers in the next step.
 Delete the `OpenSSH` rules you see there.
 
 ```sh
-sudo ufw delete <RULE_NUMBER>
+sudo ufw delete RULE_NUMBER
 ```
 
 What to do here:
@@ -164,7 +170,7 @@ Expected result:
 - `ssh vps-hermes` works
 - `ssh personal@YOUR_PUBLIC_IP` fails
 
-The public-IP failure will often look like `Operation timed out` because `ufw` is dropping the incoming connection.
+The public-IP failure will often look like `Operation timed out` because `ufw` is dropping the incoming connection. Test public IPv6 too when the local machine has IPv6 connectivity. `No route to host` from a client without IPv6 is not evidence that the server firewall blocked the connection.
 
 What this verifies:
 
@@ -178,7 +184,6 @@ What this verifies:
 If something goes wrong, re-open public SSH access temporarily.
 
 ```sh
-sudo ufw allow OpenSSH
 sudo ufw limit OpenSSH
 sudo ufw reload
 ```
@@ -187,14 +192,25 @@ What to confirm after rollback:
 
 - `sudo ufw reload` completes without errors
 - `sudo ufw status verbose` shows the `OpenSSH` rules again
-- you can reconnect using the old public SSH path if needed
+- you can reconnect using the old public SSH path if needed; the provider firewall must also permit it
+
+This restores network reachability only. Root/password login stays disabled. If Tailscale access has already failed, use an independent provider console or rescue mode to recover; a web terminal backed by SSH may also be blocked.
 
 ## Notes
 
 - Your SSH login model does not change: OpenSSH still decides which Linux user you become and what permissions that user has
 - Fail2ban is still fine to keep installed, but it matters much less for SSH once public port `22` is no longer exposed
 
+## Device expiry and old machines
+
+Expiry prevents a device from authenticating; it does not remove its inventory record. After verifying the replacement, identify the retired device by its old address, last-seen time, and OS, then use **Machines > … > Remove**. Removing the old record does not wipe the VPS. Rejoining requires authentication again. Confirm the exact retired identity before removal.
+
+Keep an independent recovery path for a server whose SSH is private. Check its key-expiry date and plan reauthentication before it expires. Do not run `tailscale up --force-reauth` through the only working connection without recovery access. Disabling expiry is an explicit availability/security trade-off, not a default hardening step.
+
 ## Official references
 
 - [Protect your SSH servers using Tailscale](https://tailscale.com/docs/reference/ssh-over-tailscale)
 - [Set up MagicDNS](https://tailscale.com/docs/features/magicdns)
+- [Remove a device](https://tailscale.com/docs/features/access-control/device-management/how-to/remove)
+- [Key expiry](https://tailscale.com/docs/features/access-control/key-expiry)
+- [Using Tailscale with your firewall](https://tailscale.com/kb/1181/firewalls)

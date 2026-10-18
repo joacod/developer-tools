@@ -47,7 +47,8 @@ Expected output:
 - `Status: active`
 - Default incoming policy set to deny
 - Default outgoing policy set to allow
-- Rules include `OpenSSH`
+- Before Tailscale migration: a public SSH rule (`OpenSSH`) is present
+- After migration: `tailscale0` is allowed and no public SSH allow/limit rule remains
 - Rules include `80/tcp` and `443/tcp` if you enabled HTTP and HTTPS
 
 ## Check open ports
@@ -114,10 +115,10 @@ Expected output:
 
 > **Run as:** your user on your `local machine`
 
-Verify direct SSH login as `root` is blocked.
+Verify direct SSH login as `root` is blocked. Use the reachable Tailscale hostname after migration, or the public address during bootstrap. Confirm the non-root login works first; a network timeout does not prove root authentication is disabled.
 
 ```sh
-ssh root@YOUR_VPS_IP
+ssh -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/vps_server root@YOUR_VPS_TAILSCALE_HOST
 ```
 
 Expected result:
@@ -131,12 +132,27 @@ Expected result:
 Verify password authentication is blocked.
 
 ```sh
-ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no youruser@YOUR_VPS_IP
+ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o NumberOfPasswordPrompts=1 myvps
 ```
 
 Expected result:
 
-- `Permission denied`
+- `Permission denied` without a password prompt
+
+If a password prompt appears, cancel it and inspect the effective server configuration. Do not use `BatchMode=yes` as proof that passwords are disabled: it prevents the client from asking for a password even when the server permits one.
+
+## Check updates and persistence
+
+> **Run as:** `youruser` on the VPS
+
+```sh
+systemctl list-timers apt-daily.timer apt-daily-upgrade.timer
+sudo apt-config dump | grep -E "APT::Periodic::(Update-Package-Lists|Unattended-Upgrade)"
+sudo dpkg --audit
+sudo systemctl --failed
+```
+
+Expect both periodic settings to be `1`, active timers, no incomplete packages, and no unexplained failed units. After an approved reboot, repeat a fresh `ssh myvps`, verify `sudo`, and check SSH, Tailscale, the firewall, and Fail2ban again.
 
 ## What this verifies
 
@@ -152,4 +168,4 @@ If all checks pass, you have verified:
 
 ## Final verdict
 
-If all checks pass, you are already way more secure than most VPS setups.
+These checks establish the configured baseline. Account security, tailnet access policy, provider firewall rules, and backup recovery still need separate review.

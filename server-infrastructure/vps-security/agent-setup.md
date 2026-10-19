@@ -49,7 +49,18 @@ Before handling keys, ask: "Do you already have a dedicated SSH key you want to 
 
 Copy the chosen public key to the intended VPS account. Preserve unrelated authorized keys on an existing system. Set `.ssh` to `700`, `authorized_keys` to `600`, and both to the account's ownership. Add the local SSH alias if absent, or update only its block if present.
 
-Default to the human guide's password-protected sudo account. Let the user enter their password securely. For a deliberately passwordless account, a locked password plus sudo-group membership alone will not make sudo usable: an explicit, validated sudoers rule is needed. Passwordless sudo means compromise of that account's SSH access permits root access without another password. Do not silently choose this trade-off or leave a temporary `NOPASSWD` rule behind.
+Default to the human guide's password-protected sudo account. Let the user enter their password securely. Passwordless sudo means compromise of that account's SSH access permits root access without another password, and in an agent-driven workflow it removes the pause before a destructive command. Do not silently choose this trade-off.
+
+A locked password plus sudo-group membership alone will not make sudo usable: an explicit, validated sudoers rule is needed. A `NOPASSWD` rule is therefore a deliberate choice, not a way to paper over a locked account. If `passwd -S youruser` reports `L`, set a password before removing any `NOPASSWD` rule:
+
+1. Keep a root session or provider console available.
+2. Set the password first: `sudo passwd youruser`. The user types it; never handle or echo it.
+3. Find and remove the `NOPASSWD` drop-in only after the password is set: `sudo grep -rl NOPASSWD /etc/sudoers /etc/sudoers.d/`.
+4. Validate with `sudo visudo -cf /etc/sudoers`.
+5. In an open session, run `sudo -k`, then `sudo -v` and `sudo id`. It must prompt and accept.
+6. Confirm `sudo -l` shows no `NOPASSWD` for the account.
+
+If a temporary `NOPASSWD` rule was needed to bootstrap, remove it in the same session after the password works. Do not leave it behind.
 
 Verify sudoers changes with `visudo -cf` before relying on them.
 
@@ -59,7 +70,7 @@ For a first setup, verify the server fingerprint before trusting it. An OS reins
 
 `ssh-keyscan` can collect a candidate public host key, but cannot establish its authenticity. Do not disable host-key checking or blindly remove a warning. After an independent match, back up `known_hosts` and replace only the relevant stale entries. Keyscan output can include comment/banner lines; parse key records rather than assuming the first line is a key.
 
-Open a separate local connection with the intended key and account. Verify `id` and working sudo (`sudo -v` then `sudo id`, or `sudo -n id` only for an intentionally passwordless account). Continue only when both work.
+Open a separate local connection with the intended key and account. Verify `id` and working sudo in a session you keep open: `sudo -k`, then `sudo -v` and `sudo id`. For an intentionally passwordless account, `sudo -n id` is enough. A cached timestamp does not prove the password works. Continue only when both work.
 
 ## 4. Harden OpenSSH and maintain packages
 

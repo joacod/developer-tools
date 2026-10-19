@@ -95,6 +95,26 @@ Expected output:
 
 - Includes `sudo`
 
+## Check the sudo model
+
+> **Run as:** `youruser` on the VPS
+
+Confirm the account has a usable password and that passwordless sudo is not accidental.
+
+```sh
+passwd -S youruser
+sudo -v && { sudo -l | grep -i nopasswd || echo "no NOPASSWD rules"; }
+```
+
+`sudo -v` authenticates first, so a failed login cannot be mistaken for "no rules". It may prompt for the password, which is expected.
+
+Expected output:
+
+- `passwd -S` reports `P` for a usable password. `L` means locked, which only works when passwordless sudo is deliberate.
+- `sudo -l` prints `no NOPASSWD rules`, or only rules you intentionally configured for a specific account.
+
+If the output differs, stop and review `/etc/sudoers` and `/etc/sudoers.d/`. A locked password plus a leftover `NOPASSWD` rule is the common cause; the [agent setup checklist](./agent-setup.md) has the switch procedure.
+
 ## Check `.ssh` permissions
 
 > **Run as:** `youruser` on the VPS
@@ -164,6 +184,7 @@ If all checks pass, you have verified:
 - The firewall is active
 - Automatic security updates are enabled
 - `youruser` has the expected permissions
+- The sudo model is deliberate: password-protected, or explicitly passwordless
 - Only expected ports are open
 
 ## Final verdict

@@ -34,10 +34,12 @@ sudo -n true 2>/dev/null && echo SUDO_READY || echo SUDO_BLOCKED
 ```
 
 - **`SUDO_READY`:** continue.
-- **`SUDO_BLOCKED`:** stop the run. Tell the user: "sudo needs your password. Run `sudo -v` in this same terminal, then tell me to continue." Wait for their confirmation, then re-check once. If it is still blocked, stop and hand back.
+- **`SUDO_BLOCKED`:** stop the run. On a password-protected account this is the expected first state, not an error. Tell the user: "sudo needs your password. Run `sudo -v` in this same terminal, then tell me to continue." Wait for their confirmation, then re-check once. If it is still blocked, stop and hand back.
 - Never ask for, accept, echo, store, or transmit the password. Do not read it from history, environment variables, or files.
+- Never set, reset, or change a password (`passwd`, `chpasswd`), and never edit PAM or authentication policy.
 - Run privileged commands in the same session or pane the user authenticated in. Sudo timestamps are per terminal; a separate `ssh host 'command'` channel stays blocked even after `sudo -v` elsewhere.
-- Re-check before each phase. The default timestamp expires after about 15 minutes, and a long upgrade can outlast it.
+- Re-check before each phase. The default timestamp lasts about 15 minutes. A privileged command already running finishes as root even if the timestamp expires; the next one is what prompts.
+- `SUDO_READY` can also mean passwordless sudo. Passwordless rules do not create a timestamp, so a later non-passwordless command can still prompt; stop rather than sending input.
 - If output stalls at a `[sudo] password for` prompt, stop and hand control back. Do not send input.
 
 Never use `sudo -S`, `SUDO_ASKPASS`, `echo password | sudo ...`, or a `NOPASSWD` sudoers rule. Do not retry a blocked privileged command in a loop.

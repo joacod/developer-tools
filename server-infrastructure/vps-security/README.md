@@ -310,7 +310,7 @@ The `systemd` backend reads the journal on Ubuntu systems without a traditional 
 
 Run the [sanity check](./sanity-check.md) to verify that the VPS is configured correctly.
 
-After the baseline setup is done, use the ongoing [server maintenance guide](./server-maintenance.md) for low-risk manual upkeep.
+After the baseline setup is done, use the ongoing [server maintenance guide](./server-maintenance.md) for low-risk manual upkeep. When an agent runs the upkeep, point it at the [agent-assisted maintenance checklist](./agent-maintenance.md) instead.
 
 ## Official reference
 

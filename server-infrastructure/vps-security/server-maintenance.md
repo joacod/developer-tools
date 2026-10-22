@@ -138,7 +138,7 @@ sudo journalctl -p 3 -xb
 grep PRETTY_NAME /etc/os-release
 ```
 
-Check the output against Ubuntu's release cycle. When standard support ends, plan an LTS-to-LTS upgrade as its own project, with backups and a maintenance window. Do not treat it as routine maintenance.
+Check the output against Ubuntu's release cycle. When standard support ends, plan an LTS-to-LTS upgrade as its own project with a maintenance window. Do not treat it as routine maintenance.
 
 ## Avoid
 

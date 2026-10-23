@@ -56,6 +56,12 @@ If you want to use the regular system ping instead, use the machine name or Tail
 ping -c 4 your-other-machine
 ```
 
+## VPS access controls
+
+For VPS installations, the recommended next step after enrollment is [VPS access controls](./vps-access-controls.md). It tags the VPS, disables its key expiry, and restricts the tailnet so your devices can reach the server while the server cannot initiate connections back to your devices.
+
+Apply and verify it before removing public SSH access.
+
 ## Serve a local URL
 
 To expose a local service only inside your tailnet, run this on the machine hosting the service:
@@ -110,7 +116,7 @@ If you are using multiple Serve mappings or non-default flags, use the matching 
 
 ## VPS guides
 
-For a VPS that already uses the base hardening guide, see [SSH over Tailscale for VPS](./ssh-over-tailscale-for-vps.md) to keep normal OpenSSH users and keys while removing public SSH exposure.
+For a VPS that already uses the base hardening guide, start with [VPS access controls](./vps-access-controls.md), then use [SSH over Tailscale for VPS](./ssh-over-tailscale-for-vps.md) to keep normal OpenSSH users and keys while removing public SSH exposure.
 
 ## Official references
 

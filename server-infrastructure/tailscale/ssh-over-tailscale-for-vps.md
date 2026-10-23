@@ -5,7 +5,7 @@ Recommended follow-up guide to move VPS SSH access from the public internet to y
 | Item | Value |
 | --- | --- |
 | Run from | Local machine and VPS |
-| Prerequisites | Completed [`VPS security`](../vps-security/README.md) setup and Tailscale installed on both machines |
+| Prerequisites | Completed [`VPS security`](../vps-security/README.md) setup, Tailscale installed and connected on both machines, and the [restricted tailnet policy](./vps-access-controls.md) ready to apply |
 | Outcome | SSH works only over Tailscale while your existing OpenSSH users and keys stay the same |
 
 ## What this setup does
@@ -30,6 +30,7 @@ This guide assumes:
 - the base hardening steps in [`VPS security`](../vps-security/README.md) are already done
 - Tailscale is installed and connected on the VPS
 - Tailscale is installed and connected on your local machine
+- the restricted tailnet policy in [VPS access controls](./vps-access-controls.md) will be applied and verified before public SSH is removed
 - your current SSH access still works before you change the firewall rules
 
 If you still need the basic Tailscale setup, start with the [Tailscale guide](./README.md).
@@ -108,6 +109,21 @@ sudo ufw allow in on tailscale0
 This allows tailnet traffic broadly. Tailscale also installs its own packet-filter rules, so UFW is not a substitute for tailnet access controls. Review grants/ACLs to decide which users and devices may reach the server.
 
 Optionally allow `41641/udp` in both host and provider firewalls for direct Tailscale connections. This is Tailscale transport, not public SSH; blocked inbound UDP can still use relays. Use the actual listen port if customized.
+
+## Apply tailnet access controls first
+
+> **Run as:** your user in the Tailscale admin dashboard
+
+Do not remove public SSH access until the restricted tailnet policy is applied and verified.
+
+Complete [VPS access controls](./vps-access-controls.md) first:
+
+- assign `tag:server` to the VPS and leave your Mac untagged
+- disable key expiry on the VPS and keep normal expiry on the Mac
+- replace the default allow-all grant with the restricted policy
+- save the policy and open a new `ssh vps-personal` connection from the Mac
+
+Keep the current session and an independent provider recovery console available. A working `tailscale status` does not prove the dashboard changes were saved.
 
 ## Remove public SSH exposure
 
@@ -205,7 +221,7 @@ This restores network reachability only. Root/password login stays disabled. If 
 
 Expiry prevents a device from authenticating; it does not remove its inventory record. After verifying the replacement, identify the retired device by its old address, last-seen time, and OS, then use **Machines > … > Remove**. Removing the old record does not wipe the VPS. Rejoining requires authentication again. Confirm the exact retired identity before removal.
 
-Keep an independent recovery path for a server whose SSH is private. Check its key-expiry date and plan reauthentication before it expires. Do not run `tailscale up --force-reauth` through the only working connection without recovery access. Disabling expiry is an explicit availability/security trade-off, not a default hardening step.
+Keep an independent recovery path for a server whose SSH is private. The standard setup here disables key expiry on the tagged VPS so a server reachable only over the tailnet cannot lock itself out; treat that as an explicit availability/security trade-off and keep normal expiry on the Mac. Check the VPS expiry setting after tagging and after a reinstall, because tagging an already-authenticated machine does not change it automatically. If you intentionally leave expiry enabled on a private-only server, plan reauthentication before it expires. Do not run `tailscale up --force-reauth` through the only working connection without recovery access.
 
 ## Official references
 

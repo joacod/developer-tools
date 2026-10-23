@@ -1,6 +1,6 @@
 # Agent-assisted VPS setup
 
-Use this checklist for a fresh Ubuntu VPS or an OS reinstall. The [human setup guide](./README.md) supplies the baseline commands; [SSH over Tailscale](../tailscale/ssh-over-tailscale-for-vps.md) supplies the private-network migration.
+Use this checklist for a fresh Ubuntu VPS or an OS reinstall. The [human setup guide](./README.md) supplies the baseline commands; [SSH over Tailscale](../tailscale/ssh-over-tailscale-for-vps.md) supplies the private-network migration, and [VPS access controls](../tailscale/vps-access-controls.md) supplies the dashboard policy checkpoint.
 
 This is an operational checklist, not an unattended installer. Execute each phase only after its preceding checks pass.
 
@@ -12,12 +12,13 @@ Resolve these from the user's request, existing local SSH configuration, and tru
 - Intended admin username and local alias, creating them if this is a first setup.
 - Whether the user wants to create a dedicated SSH key or reuse one, and its local path.
 - Whether a tailnet already exists, which account/network to use, and the server's actual name/address after enrollment.
+- Whether an authenticated Tailscale admin browser session and an authorized browser or computer-use tool are available for dashboard changes.
 - Intended public services and an independent recovery path.
 - Whether sudo requires a password or passwordless sudo is explicitly wanted.
 
 Keep actual usernames, addresses, hostnames, emails, fingerprints, keys, authentication links, and console output out of repository changes. Examples use placeholders. Never read or transmit the private SSH key. Never overwrite an existing key or replace the whole local SSH configuration.
 
-Follow the execution environment's approval rules for access changes, credentials, device removal, and reboots. Do not infer permission to delete devices, broaden tailnet access, disable expiry, or reboot a working application from a documentation task.
+Follow the execution environment's approval rules for access changes, credentials, device removal, and reboots. Do not infer permission to delete devices, change tags, broaden tailnet access, disable expiry, or reboot a working application from a documentation task.
 
 ## 1. Inspect and preserve recovery
 
@@ -88,7 +89,30 @@ Ask which Tailscale account/network to use if it is not already established. For
 
 Inspect `tailscale status` and `tailscale ip -4`. Reinstalls create new device identities; an expired record may reserve the old hostname and cause a suffix. Set the intended local SSH alias to the connected server's actual name or address, preserving other aliases. Independently verify the same new host key over this path.
 
-Prove a fresh `ssh myvps` and working sudo over Tailscale. Then follow the [firewall migration](../tailscale/ssh-over-tailscale-for-vps.md#allow-ssh-from-tailscale): permit tailnet traffic, remove every public SSH allow/limit rule for IPv4 and IPv6, and leave web ports closed unless an actual public service needs them. Preserve other legitimate workload rules.
+Prove initial connectivity with a fresh `ssh myvps` and working sudo over Tailscale while public SSH still works. Keep the initial session and an independent provider recovery console available throughout the remaining steps.
+
+### Tailscale access-controls checkpoint
+
+This is an explicit human-in-the-loop checkpoint. The remaining configuration is dashboard-only and global to the tailnet. It cannot be completed from the VPS terminal because the policy is not stored on the VPS, tag ownership is part of the central policy, and key expiry is changed from the admin console. `tailscale status` only shows that the client is connected; it does not prove the policy is in place.
+
+Complete these steps in order:
+
+1. Enroll the VPS and the local machine in Tailscale.
+2. Confirm initial private connectivity.
+3. Complete the [VPS access controls](../tailscale/vps-access-controls.md) checkpoint:
+   - Open the [Access controls](https://login.tailscale.com/admin/acls) page and define `tag:server` with `autogroup:owner` as its tag owner.
+   - Open the [Machines](https://login.tailscale.com/admin/machines) page and assign `tag:server` to the VPS; leave the Mac untagged.
+   - Check the VPS key-expiry setting and disable expiry if it is enabled. Keep expiry enabled on the Mac.
+   - Replace the default allow-all grant with the restricted policy and save.
+4. Verify a fresh OpenSSH connection from the Mac after the policy is applied.
+5. Only then remove public SSH access. Follow the [firewall migration](../tailscale/ssh-over-tailscale-for-vps.md#allow-ssh-from-tailscale): permit tailnet traffic, remove every public SSH allow/limit rule for IPv4 and IPv6, and leave web ports closed unless an actual public service needs them. Preserve other legitimate workload rules.
+6. Continue with the existing final verification in phase 6.
+
+If an authenticated Tailscale admin browser session and an authorized browser or computer-use tool are available, the agent may guide or perform the dashboard configuration with explicit user approval. Otherwise, stop at this checkpoint and direct the user to [VPS access controls](../tailscale/vps-access-controls.md). Do not ask for credentials, guess at settings, or use unapproved automation.
+
+Before continuing, ask the user to confirm that the VPS is tagged `tag:server`, its key expiry is disabled, and the restrictive policy is saved. Never assume the dashboard changes succeeded because `tailscale status` or `tailscale ping` works. Do not remove public SSH access until the resulting private SSH connection has been verified.
+
+For a VPS reinstall, the replacement is a new Tailscale identity. Check its actual name or address, tag, and key-expiry setting after enrollment; do not assume the old device's configuration carries over.
 
 Review the provider firewall too, especially before Docker publishes ports. Optional inbound Tailscale UDP permits direct connections; it does not expose SSH. Tailnet grants/ACLs, rather than UFW alone, decide which tailnet peers should reach services.
 

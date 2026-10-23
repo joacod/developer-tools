@@ -28,6 +28,8 @@ For this repo's normal VPS stack, the intended next step after this guide is [SS
 
 That keeps SSH private inside your tailnet instead of leaving port `22` exposed on the public internet.
 
+Before removing public SSH, apply the [VPS access controls](../tailscale/vps-access-controls.md) so the VPS is tagged `tag:server` and only your devices can reach it.
+
 For an agent-assisted fresh install or rebuild, use the [setup checklist](./agent-setup.md). It adds verification checkpoints without storing server-specific details in this repository.
 
 ## Before you start

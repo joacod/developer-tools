@@ -39,3 +39,4 @@
 ## Conventions
 - Keep edits scoped to the relevant directory and preserve relative links.
 - Follow each `ai-coding-harnesses/opencode/` and `ai-coding-harnesses/claude-code/` README for copy destinations instead of treating repository examples as active configuration.
+- Tailscale access controls are dashboard-only changes: require explicit user approval, verify a fresh private connection afterward, and never remove public SSH based on `tailscale status` alone.

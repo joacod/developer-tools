@@ -6,7 +6,7 @@ Dokploy is a self-hosted deployment platform for running and managing apps, data
 | --- | --- |
 | OS | Ubuntu |
 | Run from | Local machine and VPS |
-| Prerequisites | Completed [`VPS security`](../vps-security/README.md) setup |
+| Prerequisites | Completed [`VPS security`](../vps-security/README.md) setup and [VPS access controls](../tailscale/vps-access-controls.md) |
 | Outcome | Dokploy installed and reachable from your local machine over Tailscale |
 
 ## What this setup does
@@ -30,6 +30,7 @@ You should already have:
 - a non-root admin user with `sudo`
 - SSH access working from your local machine
 - Tailscale installed and working on the VPS and your local machine
+- the restricted Tailscale policy from [VPS access controls](../tailscale/vps-access-controls.md) applied, so your devices can reach the tagged VPS
 - ports `80` and `443` available before install
 
 This guide assumes the Dokploy panel is meant to stay private and be opened through `tailscale serve`, not directly from the public internet.
@@ -80,6 +81,8 @@ tailscale serve status
 You should see a Tailscale HTTPS URL ending in `:8443`.
 
 This keeps Dokploy reachable from your local machine without opening port `3000` to the public internet while leaving Dokploy free to keep using its own local `3000` binding.
+
+The [VPS access controls](../tailscale/vps-access-controls.md) example allows owner devices to reach all ports on `tag:server`, so it does not block this Serve mapping.
 
 If you have not set up Tailscale yet, use the steps in [Tailscale](../tailscale/README.md) first.
 

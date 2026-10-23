@@ -34,12 +34,13 @@ Apply and verify this before removing public SSH access. See [SSH over Tailscale
    }
    ```
 
-   For a fresh tailnet, the complete policy in step 6 already includes this.
+   For a fresh tailnet, the complete policy in step 7 also includes this definition.
 
-3. Open the [Machines](https://login.tailscale.com/admin/machines) page.
-4. Assign `tag:server` to the VPS. Open the VPS row's menu, choose **Edit tags**, add `tag:server`, and save. Leave the Mac untagged. Tagging gives the VPS a service identity instead of a user identity.
-5. Check the VPS key-expiry setting on the same row. If the menu shows **Disable key expiry**, select it. If it shows **Enable key expiry**, expiry is already disabled. Keep expiry enabled on the Mac. Tagging an already-authenticated machine does not automatically change its existing key-expiry setting.
-6. Replace the default allow-all rule (the starter grant, or the equivalent `acls` rule in an older tailnet) with a restricted policy. For a fresh, two-device personal tailnet, use the complete policy below:
+3. Save the policy with this `tagOwners` addition while preserving the existing access policy. Keep the current allow-all grant in place for now; the VPS is not tagged yet, so the restricted grant would not match it.
+4. Open the [Machines](https://login.tailscale.com/admin/machines) page.
+5. Assign `tag:server` to the VPS. Open the VPS row's menu, choose **Edit tags**, add `tag:server`, and save. Leave the Mac untagged. Tagging gives the VPS a service identity instead of a user identity.
+6. Check the VPS key-expiry setting on the same row. If the menu shows **Disable key expiry**, select it. If it shows **Enable key expiry**, expiry is already disabled. Keep expiry enabled on the Mac. Tagging an already-authenticated machine does not automatically change its existing key-expiry setting.
+7. Only after the VPS is tagged and its key-expiry setting is confirmed, replace the default allow-all rule (the starter grant, or the equivalent `acls` rule in an older tailnet) with a restricted policy. For a fresh, two-device personal tailnet, use the complete policy below:
 
    ```json
    {
@@ -60,10 +61,10 @@ Apply and verify this before removing public SSH access. See [SSH over Tailscale
 
    This example intentionally omits Tailscale SSH rules so the setup keeps using standard OpenSSH.
 
-7. Save. Tailscale applies policy changes automatically; no VPS reboot or service restart is necessary. From the Mac, open a new OpenSSH connection:
+8. Save. Tailscale applies policy changes automatically; no VPS reboot or service restart is necessary. From the Mac, open a new OpenSSH connection:
 
    ```sh
-   ssh myvps
+   ssh vps-personal
    ```
 
    Keep public SSH and an independent recovery console available until this new connection succeeds. An existing session, `tailscale status`, or `tailscale ping` does not prove the policy is active.
@@ -81,7 +82,7 @@ Apply and verify this before removing public SSH access. See [SSH over Tailscale
 
 1. Confirm the VPS row in **Machines** shows `tag:server`.
 2. Confirm the VPS menu offers **Enable key expiry** (meaning expiry is currently disabled) and the Mac menu offers **Disable key expiry** (meaning normal expiry is enabled).
-3. From the Mac, close the old session and open a new one with `ssh myvps`. Confirm the intended user, key, and sudo work.
+3. From the Mac, close the old session and open a new one with `ssh vps-personal`. Confirm the intended user, key, and sudo work.
 4. Optionally, from the VPS, try to reach a known listening service on the Mac over the tailnet; it should fail under this policy. If the Mac has no listener, rely on the policy's deny-by-default direction rather than a connection test. Do not treat `tailscale ping` or `tailscale status` as proof of application access, because they can succeed even when grants block a connection.
 
 If the new connection fails, use the admin dashboard or an independent provider console to restore the previous policy. Do not remove public SSH rules until the private path is verified.

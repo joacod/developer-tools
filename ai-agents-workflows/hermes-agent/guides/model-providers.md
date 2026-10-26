@@ -1,6 +1,6 @@
 # Model providers
 
-Hermes needs at least one inference provider. This guide keeps the reusable provider, OpenRouter, routing, and fallback notes separate from the VPS-specific setup.
+Hermes needs at least one inference provider. This guide keeps the reusable provider and fallback notes separate from the VPS-specific setup.
 
 For the full, current provider list and authentication flows, use the official [LLM and Model Providers](https://hermes-agent.nousresearch.com/docs/integrations/providers) guide.
 
@@ -22,50 +22,17 @@ hermes setup --portal
 
 This logs in, selects Nous as the provider, and enables the Tool Gateway. Use `hermes portal info` to inspect the Portal login and routing later.
 
-## OpenRouter
-
-Configure OpenRouter and its API key interactively with `hermes model`:
-
-```sh
-hermes model
-```
-
-The model IDs and availability change over time. Treat the [OpenRouter catalog](https://openrouter.ai/) as the source of truth for current model choices.
-
-## OpenRouter provider routing
-
-`provider_routing` applies to OpenRouter and Nous Portal. It does not affect direct provider connections.
-
-For example, to require parameter support and prefer providers that deny data collection:
-
-```yaml
-provider_routing:
-  require_parameters: true
-  data_collection: deny
-```
-
-The equivalent commands are:
-
-```sh
-hermes config set provider_routing.require_parameters true
-hermes config set provider_routing.data_collection deny
-```
-
-See the official [provider routing reference](https://hermes-agent.nousresearch.com/docs/user-guide/features/provider-routing) for `sort`, `only`, `ignore`, and `order`.
-
 ## Fallback providers
 
 Use a top-level `fallback_providers` list for a chain of backup provider/model pairs:
 
 ```yaml
 fallback_providers:
-  - provider: openrouter
-    model: deepseek/deepseek-v4-flash-0731
+  - provider: <provider-id>
+    model: <model-id>
 ```
 
-That model id is a dated snapshot. Confirm the slug in the [OpenRouter catalog](https://openrouter.ai/) before copying this block into a new Hermes config.
-
-The current Hermes fallback manager is also available through:
+Use the provider and model IDs shown by `hermes model`. The current Hermes fallback manager is also available through:
 
 ```sh
 hermes fallback

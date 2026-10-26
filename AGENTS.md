@@ -22,9 +22,9 @@
 - **Build:** None
 
 ## Repository layout
-- Group tool directories under the category containers `ai-coding-harnesses/`, `ai-agents-workflows/`, `ai-apis-services/`, `developer-environment/`, and `server-infrastructure/`.
+- Group tool directories under the category containers `ai-coding-harnesses/`, `ai-agents-workflows/`, `developer-environment/`, and `server-infrastructure/`.
 - Keep category containers organizational; do not add individual tool directories at the repository root.
-- Local AI remains an external repository linked from the root `README.md` until this repository has local notes for it.
+- External repositories such as [`local-ai`](https://github.com/joacod/local-ai) and [`skills`](https://github.com/joacod/skills) remain linked from the root `README.md` under Other repos until this repository has local notes for them.
 
 ## Permanent facts
 - Each tool directory is independent, and its own `README.md` is its local entry point where present.

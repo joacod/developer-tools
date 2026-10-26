@@ -15,7 +15,6 @@ Each directory is its own guide. Open that tool's README and follow it. This rep
 | Codex | [`./ai-coding-harnesses/codex`](./ai-coding-harnesses/codex) | OpenAI's terminal coding agent. |
 | OpenCode | [`./ai-coding-harnesses/opencode`](./ai-coding-harnesses/opencode) | Open source AI coding agent. |
 | Pi | [`./ai-coding-harnesses/pi`](./ai-coding-harnesses/pi) | Minimal, extensible terminal coding harness. |
-| OMP | [`./ai-coding-harnesses/omp`](./ai-coding-harnesses/omp) | Terminal coding agent with subagents, plan mode, LSP, DAP, and hashline edits. |
 | Grok Build | [`./ai-coding-harnesses/grok-build`](./ai-coding-harnesses/grok-build) | SpaceXAI's terminal coding agent (TUI, headless, ACP). |
 
 ## AI agents & workflows
@@ -24,21 +23,8 @@ Each directory is its own guide. Open that tool's README and follow it. This rep
 | --- | --- | --- |
 | Hermes Agent | [`./ai-agents-workflows/hermes-agent`](./ai-agents-workflows/hermes-agent) | Open-source autonomous AI agent available through the CLI, Desktop, and messaging gateways. |
 | Herdr | [`./ai-agents-workflows/herdr`](./ai-agents-workflows/herdr) | Persistent terminal workspace and runtime for coding agents. |
-| Agent Skills | [`./ai-agents-workflows/skills`](./ai-agents-workflows/skills) | Reusable capabilities for OpenCode, Claude Code, and other compatible AI agents. |
 | OpenSpec | [`./ai-agents-workflows/openspec`](./ai-agents-workflows/openspec) | Spec-driven development workflow for AI coding agents. |
 | Orca | [`./ai-agents-workflows/orca`](./ai-agents-workflows/orca) | Desktop IDE for running multiple AI coding agents in isolated Git worktrees. |
-
-## Local AI
-
-| Name | Repository | Description |
-| --- | --- | --- |
-| Local AI | [`local-ai`](https://github.com/joacod/local-ai) | Practical notes and small helpers for running open-source language models locally on Apple Silicon. |
-
-## AI APIs & services
-
-| Name | Path | Description |
-| --- | --- | --- |
-| OpenRouter | [`./ai-apis-services/openrouter`](./ai-apis-services/openrouter) | Unified API and model catalog for multiple LLM providers. |
 
 ## Developer environment
 
@@ -56,3 +42,10 @@ Each directory is its own guide. Open that tool's README and follow it. This rep
 | Dokploy | [`./server-infrastructure/dokploy`](./server-infrastructure/dokploy) | Self-hosted platform for deploying and managing apps, databases, and services. |
 | Tailscale | [`./server-infrastructure/tailscale`](./server-infrastructure/tailscale) | Secure private networking and remote access for devices and servers. |
 | VPS Security | [`./server-infrastructure/vps-security`](./server-infrastructure/vps-security) | VPS security and hardening notes. |
+
+## Other repos
+
+| Name | Repository | Description |
+| --- | --- | --- |
+| Local AI | [`local-ai`](https://github.com/joacod/local-ai) | Practical notes and small helpers for running open-source language models locally on Apple Silicon. |
+| Skills | [`skills`](https://github.com/joacod/skills) | Personal agent skills, experiments, and reusable workflows. |

@@ -24,15 +24,13 @@ This logs in, selects Nous as the provider, and enables the Tool Gateway. Use `h
 
 ## OpenRouter
 
-[OpenRouter notes and model shortlist](../../../ai-apis-services/openrouter/README.md) live separately from this Hermes configuration guide.
-
 Configure OpenRouter and its API key interactively with `hermes model`:
 
 ```sh
 hermes model
 ```
 
-The model IDs and availability change over time. Treat the [OpenRouter catalog](https://openrouter.ai/) and the repository shortlist as the source of truth for current model choices.
+The model IDs and availability change over time. Treat the [OpenRouter catalog](https://openrouter.ai/) as the source of truth for current model choices.
 
 ## OpenRouter provider routing
 
@@ -65,7 +63,7 @@ fallback_providers:
     model: deepseek/deepseek-v4-flash-0731
 ```
 
-That model id is the dated snapshot in the [OpenRouter shortlist](../../../ai-apis-services/openrouter/README.md). Confirm the slug in the catalog before copying this block into a new Hermes config.
+That model id is a dated snapshot. Confirm the slug in the [OpenRouter catalog](https://openrouter.ai/) before copying this block into a new Hermes config.
 
 The current Hermes fallback manager is also available through:
 

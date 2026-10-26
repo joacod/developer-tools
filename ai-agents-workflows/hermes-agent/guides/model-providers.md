@@ -32,7 +32,7 @@ fallback_providers:
     model: <model-id>
 ```
 
-Use the provider and model IDs shown by `hermes model`. The current Hermes fallback manager is also available through:
+Each entry needs a provider value and model ID. The current Hermes fallback manager can add and validate entries interactively:
 
 ```sh
 hermes fallback
